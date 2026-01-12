@@ -1,0 +1,22 @@
+-- 00_check_setup.sql
+-- Purpose: Quick check to verify that all databases and objects have been created successfully.
+
+-- 1. Check Databases
+SHOW DATABASES LIKE 'BANK_DB';
+SHOW DATABASES LIKE 'INSURER_DB';
+SHOW DATABASES LIKE 'SHARED_ANALYSIS_ZONE';
+
+-- 2. Check Schemas
+SHOW SCHEMAS IN DATABASE SHARED_ANALYSIS_ZONE;
+
+-- 3. Check Tables/Views (Check if data exists)
+SELECT 'BANK_DB.RAW.TRANSACTIONS' as Table_Name, COUNT(*) as Row_Count FROM BANK_DB.RAW.TRANSACTIONS;
+SELECT 'INSURER_DB.RAW.CLAIMS' as Table_Name, COUNT(*) as Row_Count FROM INSURER_DB.RAW.CLAIMS;
+
+-- 4. Check Clean Room Objects
+SHOW VIEWS IN SCHEMA SHARED_ANALYSIS_ZONE.CLEANROOM;
+SHOW PROCEDURES IN SCHEMA SHARED_ANALYSIS_ZONE.CLEANROOM;
+SHOW TASKS IN SCHEMA SHARED_ANALYSIS_ZONE.CLEANROOM;
+SHOW STREAMLITS IN SCHEMA SHARED_ANALYSIS_ZONE.CLEANROOM;
+
+SELECT 'Check Complete. If no errors above, setup is successful.' as Status;

@@ -3,7 +3,10 @@
 -- Instructions: Run this script. Then go to Snowsight -> Streamlit and open "Shared Analysis Dashboard".
 
 USE ROLE ACCOUNTADMIN;
-USE SCHEMA SHARED_ANALYSIS_ZONE.CLEANROOM;
+USE DATABASE SHARED_ANALYSIS_ZONE;
+USE SCHEMA CLEANROOM;
+
+CREATE STAGE IF NOT EXISTS ROOT_STAGE;
 
 CREATE OR REPLACE STREAMLIT SHARED_ANALYSIS_DASHBOARD
 ROOT_LOCATION = '@SHARED_ANALYSIS_ZONE.CLEANROOM.ROOT_STAGE' -- Ensure you have a stage or use default if supported
@@ -43,10 +46,10 @@ if run_btn:
     with st.spinner("Querying Secure Views in Clean Room & Generating AI Insights..."):
         # 1. Run the Aggregate Analysis Procedure
         # We call the stored procedure we created in step 04
-        cmd_sql = f"CALL SHARED_ANALYSIS_ZONE.CLEANROOM.ANALYZE_CROSS_INDUSTRY_FRAUD({min_age}, {max_age})"
+        cmd_sql = f"SELECT * FROM TABLE(SHARED_ANALYSIS_ZONE.CLEANROOM.ANALYZE_CROSS_INDUSTRY_FRAUD({min_age}, {max_age}))"
         df_risk = session.sql(cmd_sql).to_pandas()
         
-        if notdf_risk.empty:
+        if not df_risk.empty:
             # Layout: Metrics & Narrative
             col1, col2 = st.columns([2, 1])
             
